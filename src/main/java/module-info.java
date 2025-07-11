@@ -6,6 +6,7 @@ module com.example.musiccatalogue {
 	requires java.naming;
 	requires javafx.media;
 
+
 	opens com.example.musiccatalogue to javafx.fxml;
 	exports com.example.musiccatalogue;
 }

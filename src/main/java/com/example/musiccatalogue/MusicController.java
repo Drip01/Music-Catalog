@@ -3,6 +3,7 @@ package com.example.musiccatalogue;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -11,12 +12,10 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 
+
 import java.io.File;
 import java.sql.*;
 
-/* This class controls the music catalog app's user interface, handling actions like adding songs,
-   playing music, deleting songs, and showing play history. It connects the UI elements (like buttons
-   and tables) to the database and media player. */
 public class MusicController {
 
 	// UI elements linked to the FXML file
@@ -33,7 +32,8 @@ public class MusicController {
 	@FXML private ComboBox<String> letterFilterComboBox; // Dropdown to filter songs by first letter
 	@FXML private Button playPauseBtn; // Button to play or pause music
 
-	@FXML private TextField titleField, artistField, albumField, genreField, yearField; // Input fields for song details
+
+//	@FXML private TextField titleField, artistField, albumField, genreField, yearField; // Input fields for song details
 	@FXML private Label nowPlayingLabel; // Shows what's currently playing
 	@FXML private HBox nowPlayingBar; // The bar at the bottom showing the current song
 
@@ -98,73 +98,89 @@ public class MusicController {
 			return row;
 		});
 
-		historyListView.setOnMouseClicked(event -> {
-		Song selected = historyListView.getSelectionModel().getSelectedItem(); // Get clicked song
-			if (selected == null) return;
+		historyListView.setCellFactory(lv -> {
+			ListCell<Song> cell = new ListCell<>() {
+				@Override
+				protected void updateItem(Song song, boolean empty) {
+					super.updateItem(song, empty);
+					setText(empty || song == null ? null : song.getTitle() + " - " + song.getArtist());
+				}
+			};
 
-			// If it's a new song, play it
-			if (currentSong == null || !currentSong.equals(selected)) {
-				if (mediaPlayer != null) mediaPlayer.stop(); // Stop current song
-				Media media = new Media(selected.getFilepath()); // Load song
-				mediaPlayer = new MediaPlayer(media); // Create player
-				mediaPlayer.play(); // Start playing
-				currentSong = selected; // Update current song
-				isPlaying = true; // Update playing status
-				// addToHistory(selected.getId()); // Add to history
-				// loadHistory();  Refresh history list
-				historyListView.refresh();
-				return;
-			}
+			cell.setOnMouseClicked(event -> {
+				if (!cell.isEmpty()) {
+					Song selected = cell.getItem();
 
-			// If same song, toggle play/pause
-			if (isPlaying) {
-				mediaPlayer.pause();
-				isPlaying = false;
-			} else {
-				mediaPlayer.play();
-				isPlaying = true;
-			}
-			historyListView.refresh(); // Update list display
+					if (currentSong == null || !currentSong.equals(selected)) {
+						if (mediaPlayer != null) mediaPlayer.stop();
+
+						Media media = new Media(selected.getFilepath());
+						mediaPlayer = new MediaPlayer(media);
+						mediaPlayer.play();
+						currentSong = selected;
+						isPlaying = true;
+
+						nowPlayingLabel.setText("🎵 " + selected.getTitle() + " by " + selected.getArtist());
+						nowPlayingBar.setVisible(true);
+						nowPlayingBar.setManaged(true);
+
+//						addToHistory(selected.getId());
+//						loadHistory();
+					} else {
+						if (isPlaying) {
+							mediaPlayer.pause();
+							isPlaying = false;
+							nowPlayingLabel.setText("⏸️ " + selected.getTitle() + " by " + selected.getArtist());
+						} else {
+							mediaPlayer.play();
+							isPlaying = true;
+							nowPlayingLabel.setText("🎵 " + selected.getTitle() + " by " + selected.getArtist());
+						}
+					}
+				}
+			});
+
+			return cell;
 		});
 	}
 
 	/* Adds a new song to the database and table when the "Add Song" button is clicked */
-	@FXML
-	public void addSong() {
-		// Check if a music file is selected
-		if (selectedFile == null) {
-			fileLabel.setText("Please select a file first.");
-			return;
-		}
-		// Check if required fields (title, artist, year) are filled
-		if (titleField.getText().isEmpty() || artistField.getText().isEmpty() || yearField.getText().isEmpty()) {
-			Alert alert = new Alert(Alert.AlertType.WARNING);
-			alert.setTitle("Missing Fields");
-			alert.setHeaderText("Title, Artist, and Year are required.");
-			alert.showAndWait();
-			return;
-		}
-
-		// SQL command to add a song to the database
-		String sql = "INSERT INTO songs (title, artist, album, genre, year, filepath) VALUES (?, ?, ?, ?, ?, ?)";
-
-		try (Connection conn = DBConnection.connect(); // Connect to database
-			 PreparedStatement pstmt = conn.prepareStatement(sql)) { // Prepare SQL
-			pstmt.setString(1, titleField.getText()); // Set title
-			pstmt.setString(2, artistField.getText()); // Set artist
-			pstmt.setString(3, albumField.getText().isEmpty() ? "Unknown Album" : albumField.getText()); // Set album or default
-			pstmt.setString(4, genreField.getText().isEmpty() ? "Unknown Genre" : genreField.getText()); // Set genre or default
-			pstmt.setInt(5, Integer.parseInt(yearField.getText())); // Set year
-			pstmt.setString(6, selectedFile.toURI().toString()); // Set file path
-			pstmt.executeUpdate(); // Run the SQL to add the song
-			loadSongs(); // Refresh the song table
-			clearFields(); // Clear input fields
-			fileLabel.setText("No file selected"); // Reset file label
-			selectedFile = null; // Clear selected file
-		} catch (SQLException e) {
-			e.printStackTrace(); // Show error if database fails
-		}
-	}
+//	@FXML
+//	public void addSong() {
+//		// Check if a music file is selected
+//		if (selectedFile == null) {
+//			fileLabel.setText("Please select a file first.");
+//			return;
+//		}
+//		// Check if required fields (title, artist, year) are filled
+//		if (titleField.getText().isEmpty() || artistField.getText().isEmpty() || yearField.getText().isEmpty()) {
+//			Alert alert = new Alert(Alert.AlertType.WARNING);
+//			alert.setTitle("Missing Fields");
+//			alert.setHeaderText("Title, Artist, and Year are required.");
+//			alert.showAndWait();
+//			return;
+//		}
+//
+//		// SQL command to add a song to the database
+//		String sql = "INSERT INTO songs ( artist, title, album, genre, year, filepath) VALUES (?, ?, ?, ?, ?, ?)";
+//
+//		try (Connection conn = DBConnection.connect(); // Connect to database
+//			 PreparedStatement pstmt = conn.prepareStatement(sql)) { // Prepare SQL
+//			pstmt.setString(1, titleField.getText()); // Set title
+//			pstmt.setString(2, artistField.getText()); // Set artist
+//			pstmt.setString(3, albumField.getText().isEmpty() ? "Unknown Album" : albumField.getText()); // Set album or default
+//			pstmt.setString(4, genreField.getText().isEmpty() ? "Unknown Genre" : genreField.getText()); // Set genre or default
+//			pstmt.setInt(5, Integer.parseInt(yearField.getText())); // Set year
+//			pstmt.setString(6, selectedFile.toURI().toString()); // Set file path
+//			pstmt.executeUpdate(); // Run the SQL to add the song
+//			loadSongs(); // Refresh the song table
+//			clearFields(); // Clear input fields
+//			fileLabel.setText("No file selected"); // Reset file label
+//			selectedFile = null; // Clear selected file
+//		} catch (SQLException e) {
+//			e.printStackTrace(); // Show error if database fails
+//		}
+//	}
 
 	/* Loads all songs from the database into the table */
 	private void loadSongs() {
@@ -179,8 +195,8 @@ public class MusicController {
 			while (rs.next()) {
 				songList.add(new Song(
 						rs.getInt("id"), // Song ID
-						rs.getString("title"), // Song title
 						rs.getString("artist"), // Artist name
+						rs.getString("title"), // Song title
 						rs.getString("album"), // Album name
 						rs.getString("genre"), // Genre
 						rs.getInt("year"), // Year
@@ -196,14 +212,14 @@ public class MusicController {
 		}
 	}
 
-	/* Clears all input fields after adding a song */
-	private void clearFields() {
-		titleField.clear(); // Clear title field
-		artistField.clear(); // Clear artist field
-		albumField.clear(); // Clear album field
-		genreField.clear(); // Clear genre field
-		yearField.clear(); // Clear year field
-	}
+//	/* Clears all input fields after adding a song */
+//	private void clearFields() {
+//		titleField.clear(); // Clear title field
+//		artistField.clear(); // Clear artist field
+//		albumField.clear(); // Clear album field
+//		genreField.clear(); // Clear genre field
+//		yearField.clear(); // Clear year field
+//	}
 
 	/* Deletes a selected song from the database and table */
 	@FXML
@@ -245,7 +261,7 @@ public class MusicController {
 
 			songList.remove(selectedSong); // Remove song from table
 			songTable.refresh(); // Update table display
-			clearFields(); // Clear input fields
+//			clearFields(); // Clear input fields
 		} catch (SQLException e) {
 			e.printStackTrace(); // Show error if database fails
 		}
@@ -254,15 +270,64 @@ public class MusicController {
 	/* Opens a file chooser to select a music file */
 	@FXML
 	public void chooseFile() {
-		FileChooser chooser = new FileChooser(); // Create file chooser
-		chooser.setTitle("Choose a Song"); // Set window title
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Audio Files", "*.mp3", "*.wav")); // Limit to MP3/WAV
-		File file = chooser.showOpenDialog(null); // Show file chooser
+		FileChooser chooser = new FileChooser();
+		chooser.setTitle("Choose a Song");
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Audio Files", "*.mp3", "*.wav"));
+		File file = chooser.showOpenDialog(null);
 
-		// Update label with file name or "No file selected"
 		if (file != null) {
 			selectedFile = file;
 			fileLabel.setText(file.getName());
+
+			Media media = new Media(file.toURI().toString());
+			MediaPlayer mediaPlayer = new MediaPlayer(media);
+
+			final String[] title = {file.getName().replaceFirst("[.][^.]+$", "")};
+			final String[] artist = {"Unknown Artist"};
+			final String[] album = {"Unknown Album"};
+			final String[] genre = {"Unknown Genre"};
+			final int[] year = {0};
+
+			media.getMetadata().addListener((MapChangeListener<String, Object>) change -> {
+				if (change.wasAdded()) {
+					String key = change.getKey();
+					Object value = change.getValueAdded();
+
+					switch (key.toLowerCase()) {
+						case "title" -> title[0] = value.toString();
+						case "artist" -> artist[0] = value.toString();
+						case "album" -> album[0] = value.toString();
+						case "genre" -> genre[0] = value.toString();
+						case "year" -> {
+							if (value.toString().matches("\\d{4}")) {
+								year[0] = Integer.parseInt(value.toString());
+							}
+						}
+					}
+				}
+			});
+
+			mediaPlayer.setOnReady(() -> {
+				String sql = "INSERT INTO songs (artist, title, album, genre, year, filepath) VALUES (?, ?, ?, ?, ?, ?)";
+				try (Connection conn = DBConnection.connect();
+					 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+					pstmt.setString(1, artist[0]);
+					pstmt.setString(2, title[0]);
+					pstmt.setString(3, album[0]);
+					pstmt.setString(4, genre[0]);
+					pstmt.setInt(5, year[0]);
+					pstmt.setString(6, file.toURI().toString());
+					pstmt.executeUpdate();
+
+					loadSongs();
+					fileLabel.setText("No file selected");
+					selectedFile = null;
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			});
+
 		} else {
 			fileLabel.setText("No file selected");
 		}
@@ -333,8 +398,8 @@ public class MusicController {
 			while (rs.next()) {
 				Song song = new Song(
 						rs.getInt("id"), // Song ID
-						rs.getString("title"), // Song title
 						rs.getString("artist"), // Artist name
+						rs.getString("title"), // Song title
 						rs.getString("album"), // Album name
 						rs.getString("genre"), // Genre
 						rs.getInt("year"), // Year
@@ -347,18 +412,6 @@ public class MusicController {
 			e.printStackTrace(); // Show error if database fails
 		}
 	}
-
-//	/* Plays a song from the history list */
-//	private void playSongFromHistory(Song song) {
-//		if (mediaPlayer != null) mediaPlayer.stop(); // Stop current song
-//		Media media = new Media(song.getFilepath()); // Load song
-//		mediaPlayer = new MediaPlayer(media); // Create player
-//		mediaPlayer.play(); // Start playing
-//		currentSong = song; // Update current song
-//		isPlaying = true; // Update playing status
-//		addToHistory(song.getId()); // Add to history
-//		loadHistory(); // Refresh history list
-//	}
 
 	/* Clears all play history */
 	@FXML

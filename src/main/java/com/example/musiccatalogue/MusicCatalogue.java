@@ -13,7 +13,7 @@ public class MusicCatalogue extends Application {
 		FXMLLoader fxmlLoader = new FXMLLoader(MusicCatalogue.class.getResource("music_catalog.fxml"));
 		Scene scene = new Scene(fxmlLoader.load());
 		stage.setTitle("Music Catalogue");
-		stage.setResizable(false);
+		stage.setResizable(true);
 		stage.setScene(scene);
 		stage.show();
 	}

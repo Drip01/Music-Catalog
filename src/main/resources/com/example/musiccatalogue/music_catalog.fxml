@@ -16,39 +16,50 @@
                 <Insets top="15" right="15" bottom="15" left="15"/>
             </padding>
 
-            <!-- Input Fields -->
-            <GridPane hgap="10" vgap="10">
-                <columnConstraints>
-                    <ColumnConstraints percentWidth="20"/>
-                    <ColumnConstraints percentWidth="20"/>
-                    <ColumnConstraints percentWidth="20"/>
-                    <ColumnConstraints percentWidth="20"/>
-                    <ColumnConstraints percentWidth="20"/>
-                </columnConstraints>
-                <TextField fx:id="artistField" promptText="Artist" GridPane.columnIndex="0"/>
-                <TextField fx:id="titleField" promptText="Title" GridPane.columnIndex="1"/>
-                <TextField fx:id="albumField" promptText="Album" GridPane.columnIndex="2"/>
-                <TextField fx:id="genreField" promptText="Genre" GridPane.columnIndex="3"/>
-                <TextField fx:id="yearField" promptText="Year" GridPane.columnIndex="4"/>
-            </GridPane>
+<!--             Input Fields-->
+<!--            <GridPane hgap="10" vgap="10">-->
+<!--                <columnConstraints>-->
+<!--                    <ColumnConstraints percentWidth="20"/>-->
+<!--                    <ColumnConstraints percentWidth="20"/>-->
+<!--                    <ColumnConstraints percentWidth="20"/>-->
+<!--                    <ColumnConstraints percentWidth="20"/>-->
+<!--                    <ColumnConstraints percentWidth="20"/>-->
+<!--                </columnConstraints>-->
+<!--                <TextField fx:id="artistField" promptText="Artist" GridPane.columnIndex="0"/>-->
+<!--                <TextField fx:id="titleField" promptText="Title" GridPane.columnIndex="1"/>-->
+<!--                <TextField fx:id="albumField" promptText="Album" GridPane.columnIndex="2"/>-->
+<!--                <TextField fx:id="genreField" promptText="Genre" GridPane.columnIndex="3"/>-->
+<!--                <TextField fx:id="yearField" promptText="Year" GridPane.columnIndex="4"/>-->
+<!--            </GridPane>-->
 
             <!-- File and Control Buttons -->
             <Label fx:id="fileLabel" text="" visible="false" managed="false"/>
-            <HBox spacing="150">
-                <Button text="Choose File" onAction="#chooseFile" prefWidth="100" />
-                <Button text="Add Song" onAction="#addSong" prefWidth="100" />
-                <Button text="Delete" onAction="#deleteSong" prefWidth="100" />
-                <Button text="View History" onAction="#goToHistory" prefWidth="100" />
+            <BorderPane prefWidth="600">
+                <!-- Right Choose File button -->
+                <left>
+                    <Button text="Choose File" onAction="#chooseFile" prefWidth="100" />
+                </left>
 
-            </HBox>
+                <!-- Center View History button -->
+                <center>
+                    <HBox alignment="CENTER">
+                        <Button text="View History" onAction="#goToHistory" prefWidth="100" />
+                    </HBox>
+                </center>
+
+                <!-- Left Delete button -->>
+                <right>
+                    <Button text="Delete" onAction= "#deleteSong"/>
+                </right>
+            </BorderPane>
 
             <!-- Songs Table -->
-            <TableView fx:id="songTable" prefHeight="500">
+            <TableView fx:id="songTable" VBox.vgrow="ALWAYS">
                 <columns>
-                    <TableColumn fx:id="titleCol" text="Title" prefWidth="150">
+                    <TableColumn fx:id="titleCol" text="Artist" prefWidth="150">
                         <cellValueFactory><PropertyValueFactory property="title"/></cellValueFactory>
                     </TableColumn>
-                    <TableColumn fx:id="artistCol" text="Artist" prefWidth="150">
+                    <TableColumn fx:id="artistCol" text="Title" prefWidth="150">
                         <cellValueFactory><PropertyValueFactory property="artist"/></cellValueFactory>
                     </TableColumn>
                     <TableColumn fx:id="albumCol" text="Album" prefWidth="150">
