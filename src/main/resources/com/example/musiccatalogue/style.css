@@ -1,0 +1,201 @@
+/*  Spotify-inspired dark theme */
+
+/*  Root Styles */
+.root {
+    -fx-background-color: #181818; /* Main dark background */
+    -fx-font-family: "Segoe UI", Roboto, sans-serif;
+    -fx-text-fill: #FFFFFF; /* White text for readability */
+}
+
+/*  TabPane Styling  */
+.tab-pane {
+    -fx-background-color: #181818;
+}
+
+.tab-pane .tab {
+    -fx-background-color: #282828; /* Tabs slightly lighter than background */
+    -fx-background-radius: 5 5 0 0;
+    -fx-padding: 8 20 8 20;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #1DB954; /*  green for active tab */
+    -fx-text-fill: #FFFFFF;
+}
+
+.tab-pane .tab .tab-label {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* Content area inside each tab */
+.tab-pane .tab-content-area {
+    -fx-background-color: #181818;
+    -fx-padding: 10;
+}
+
+/*  VBox Container */
+.vbox {
+    -fx-background-color: #181818;
+    -fx-padding: 15; /* Internal spacing */
+}
+
+/*  TextField Styling */
+.text-field {
+    -fx-background-color: #282828; /* Dark field background */
+    -fx-text-fill: #FFFFFF; /* White text */
+    -fx-prompt-text-fill: #B3B3B3; /* Light gray placeholder */
+    -fx-background-radius: 5;
+    -fx-border-color: transparent;
+    -fx-padding: 8;
+    -fx-font-size: 13px;
+}
+
+.text-field:focused {
+    -fx-background-color: #333333;
+    -fx-border-color: #1DB954; /* Highlight border on focus */
+    -fx-border-width: 1;
+}
+
+/*  Button Styling  */
+.button {
+    -fx-background-color: #1DB954; /* Spotify green */
+    -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 20; /* Pill-shaped buttons */
+    -fx-padding: 8 15 8 15;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-max-width: Infinity;
+}
+
+.button:hover {
+    -fx-background-color: #1ED760; /* Brighter green on hover */
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.button:pressed {
+    -fx-background-color: #18A647; /* Darker green on click */
+    -fx-scale-x: 1.0;
+    -fx-scale-y: 1.0;
+}
+
+/*  Play/Pause Button  */
+.play-pause-btn {
+    -fx-background-color: #282828;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 50%; /* Circular button */
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+    -fx-font-size: 20px;
+}
+
+.play-pause-btn:hover {
+    -fx-background-color: #1DB954;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+.play-pause-btn:pressed {
+    -fx-background-color: #18A647;
+    -fx-scale-x: 1.0;
+    -fx-scale-y: 1.0;
+}
+
+/*  TableView Styling  */
+.table-view {
+    -fx-background-color: #282828;
+    -fx-border-color: #282828;
+    -fx-table-cell-border-color: #282828;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #181818; /* Header matches root */
+    -fx-border-color: #282828;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #000000;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-alignment: center-left;
+}
+
+.table-view .table-cell {
+    -fx-text-fill: #FFFFFF; /* Always white text */
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: #282828;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 13px;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: #2A2A2A;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #1DB954;
+    -fx-text-fill: #FFFFFF;
+}
+
+.table-view .table-row-cell:hover .table-cell{
+    -fx-text-fill: #FFFFFF;
+}
+
+/*  ListView Styling  */
+.list-view {
+    -fx-background-color: #282828;
+    -fx-border-color: #282828;
+}
+
+.list-view .list-cell {
+    -fx-background-color: #282828;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 13px;
+    -fx-padding: 8;
+}
+
+list-view .list-cell:odd {
+    -fx-background-color: #2A2A2A;
+}
+
+.list-view .list-cell:selected {
+    -fx-background-color: #1DB954;
+    -fx-text-fill: #FFFFFF;
+}
+
+.list-view .list-cell:hover {
+    -fx-background-color: #333333;
+}
+
+/*  Label Styling */
+.label {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 14px;
+}
+
+.label.header {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+}
+
+/*  Now Playing Bar  */
+.now-playing-bar {
+    -fx-background-color: #282828;
+    -fx-padding: 10;
+    -fx-border-color: #181818;
+    -fx-border-width: 1 0 0 0; /* Top border only */
+}
+
+/* HBox  */
+.hbox {
+    -fx-background-color: transparent;
+}

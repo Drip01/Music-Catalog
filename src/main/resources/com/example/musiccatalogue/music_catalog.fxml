@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<TabPane fx:id="tabPane" xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml"
+         fx:controller="com.example.musiccatalogue.MusicController"
+         stylesheets="@style.css">
+
+    <!-- Music Tab -->
+    <Tab fx:id="libraryTab" text="🎵 Music Library" closable="false">
+        <VBox spacing="15">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+
+            <!-- Input Fields -->
+            <GridPane hgap="10" vgap="10">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="20"/>
+                    <ColumnConstraints percentWidth="20"/>
+                    <ColumnConstraints percentWidth="20"/>
+                    <ColumnConstraints percentWidth="20"/>
+                    <ColumnConstraints percentWidth="20"/>
+                </columnConstraints>
+                <TextField fx:id="artistField" promptText="Artist" GridPane.columnIndex="0"/>
+                <TextField fx:id="titleField" promptText="Title" GridPane.columnIndex="1"/>
+                <TextField fx:id="albumField" promptText="Album" GridPane.columnIndex="2"/>
+                <TextField fx:id="genreField" promptText="Genre" GridPane.columnIndex="3"/>
+                <TextField fx:id="yearField" promptText="Year" GridPane.columnIndex="4"/>
+            </GridPane>
+
+            <!-- File and Control Buttons -->
+            <Label fx:id="fileLabel" text="" visible="false" managed="false"/>
+            <HBox spacing="150">
+                <Button text="Choose File" onAction="#chooseFile" prefWidth="100" />
+                <Button text="Add Song" onAction="#addSong" prefWidth="100" />
+                <Button text="Delete" onAction="#deleteSong" prefWidth="100" />
+                <Button text="View History" onAction="#goToHistory" prefWidth="100" />
+
+            </HBox>
+
+            <!-- Songs Table -->
+            <TableView fx:id="songTable" prefHeight="500">
+                <columns>
+                    <TableColumn fx:id="titleCol" text="Title" prefWidth="150">
+                        <cellValueFactory><PropertyValueFactory property="title"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="artistCol" text="Artist" prefWidth="150">
+                        <cellValueFactory><PropertyValueFactory property="artist"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="albumCol" text="Album" prefWidth="150">
+                        <cellValueFactory><PropertyValueFactory property="album"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="genreCol" text="Genre" prefWidth="100">
+                        <cellValueFactory><PropertyValueFactory property="genre"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="yearCol" text="Year" prefWidth="80">
+                        <cellValueFactory><PropertyValueFactory property="year"/></cellValueFactory>
+                    </TableColumn>
+                </columns>
+            </TableView>
+
+            <!-- Now Playing Bar (at the bottom) -->
+            <HBox fx:id="nowPlayingBar" spacing="10" alignment="CENTER_LEFT">
+                <Label fx:id="nowPlayingLabel" text="Now Playing"/>
+
+                <!-- Spacer pushes the button to the right -->
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="playPauseBtn" text="▶" onAction="#handlePlayPauseButton"
+                        styleClass="play-pause-btn"/>
+            </HBox>
+
+        </VBox>
+    </Tab>
+
+
+    <Tab fx:id="historyTab" text="📜History" closable="false">
+        <VBox spacing="15" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+
+            <Label text="Recently Played Songs" style="-fx-font-size: 16px; -fx-text-fill: white;"/>
+            <ListView fx:id="historyListView" prefHeight="500" VBox.vgrow="ALWAYS"/>
+
+            <!-- Bottom buttons aligned left and right -->
+            <HBox spacing="10">
+                <Button text="Back to Library" onAction="#goToLibrary" alignment="BOTTOM_LEFT"/>
+                <Button text="Clear History" onAction="#clearHistory" alignment="BOTTOM_RIGHT"/>
+            </HBox>
+        </VBox>
+    </Tab>
+</TabPane>
